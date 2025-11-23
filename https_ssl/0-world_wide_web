@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Function to fetch and display DNS info for a subdomain
+get_subdomain_info() {
+    local domain=$1
+    local subdomain=$2
+
+    # Extract the ANSWER SECTION line after the heading
+    line=$(dig "$subdomain.$domain" | awk '/ANSWER SECTION:/ {getline; print}')
+
+    record_type=$(echo "$line" | awk '{print $4}')
+    destination=$(echo "$line" | awk '{print $5}')
+
+    echo "The subdomain $subdomain is a $record_type record and points to $destination"
+}
+
+domain=$1
+subdomain=$2
+
+# If only domain is provided → do all 4 subdomains
+if [ -z "$subdomain" ]; then
+    for sd in www lb-01 web-01 web-02; do
+        get_subdomain_info "$domain" "$sd"
+    done
+else
+    # If domain + subdomain provided → check only that one
+    get_subdomain_info "$domain" "$subdomain"
+fi
