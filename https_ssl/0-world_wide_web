@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Function to fetch and display DNS info for a subdomain
 get_subdomain_info() {
